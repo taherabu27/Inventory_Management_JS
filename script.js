@@ -24,7 +24,7 @@ const initialProducts = [
   {
     name: 'MacBook Air',
     quantity: 5,
-    price: 7500,
+    price: 1250,
     vendor: 'Apple',
     category: 'Electronics',
   },
@@ -32,13 +32,34 @@ const initialProducts = [
   {
     name: 'Magic mouse',
     quantity: 15,
-    price: 1485,
+    price: 99,
     vendor: 'Apple',
     category: 'Accessories',
   },
 ];
 
 let inventoryList = [...initialProducts];
+
+function renderTotalSum (){
+  const renderInvSum= document.getElementById('inventory-sum');
+  renderInvSum.textContent=formatCurrency(calculateInventorySum());
+}
+
+function formatCurrency (amount){
+  return 'Total Inventory Items Value=$'+ amount.toFixed(2);
+
+
+}
+
+function calculateInventorySum() {
+  let indexSum = 0;
+  inventoryList.forEach(product => {
+    indexSum += product.price * product.quantity;
+    
+  });
+  return indexSum;
+
+}
 
 // product Inventory list fetch
 
@@ -62,9 +83,11 @@ function getNewProductInInventory(event) {
   }
   inventoryList.push(newlyAddedProduct);
 
+
   document.getElementById('productForm').reset();
 
-  renderProducts();
+  renderProducts(newlyAddedProduct);
+  renderTotalSum();
 
 }
 
@@ -80,6 +103,7 @@ function amendInventoryList(index) {
   document.getElementById('productId').value = index;
 
   // renderProducts(inventoryList);
+  renderTotalSum();
 
 }
 
@@ -105,6 +129,8 @@ function deleteProduct(index) {
   alert('are you sure to delete?')
   inventoryList.splice(index, 1);
   renderProducts();
+
+  renderTotalSum();
 
 }
 
@@ -132,10 +158,12 @@ function renderProducts() {
       `;
     productInventoryList.appendChild(newProductInTable)
   });
+  renderTotalSum();
 
 }
 document.getElementById('productForm').addEventListener('submit', getNewProductInInventory);
 
 
 renderProducts();
+renderTotalSum();
 
