@@ -1,52 +1,56 @@
 // Initial products array
 const initialProducts = [
   {
-    name: 'Laptop',
-    quantity: 10,
-    price: 800,
-    vendor: 'Dell',
-    category: 'Electronics',
+      name: 'Laptop',
+      quantity: 10,
+      price: 800,
+      vendor: 'Dell',
+      category: 'Electronics',
   },
   {
-    name: 'Phone',
-    quantity: 25,
-    price: 500,
-    vendor: 'Samsung',
-    category: 'Electronics',
+      name: 'Phone',
+      quantity: 25,
+      price: 500,
+      vendor: 'Samsung',
+      category: 'Electronics',
   },
   {
-    name: 'Desk Chair',
-    quantity: 15,
-    price: 150,
-    vendor: 'Ikea',
-    category: 'Furniture',
+      name: 'Desk Chair',
+      quantity: 15,
+      price: 150,
+      vendor: 'Ikea',
+      category: 'Furniture',
   },
   {
-    name: 'MacBook Air',
-    quantity: 5,
-    price: 1250,
-    vendor: 'Apple',
-    category: 'Electronics',
+      name: 'MacBook Air',
+      quantity: 5,
+      price: 1250,
+      vendor: 'Apple',
+      category: 'Electronics',
   },
 
   {
-    name: 'Magic mouse',
-    quantity: 15,
-    price: 99,
-    vendor: 'Apple',
-    category: 'Accessories',
+      name: 'Magic mouse',
+      quantity: 15,
+      price: 99,
+      vendor: 'Apple',
+      category: 'Accessories',
   },
 ];
 
 let inventoryList = [...initialProducts];
 
-function renderTotalSum (){
-  const renderInvSum= document.getElementById('inventory-sum');
-  renderInvSum.textContent=formatCurrency(calculateInventorySum());
+let editIndex = null;
+
+
+
+function renderTotalSum() {
+  const renderInvSum = document.getElementById('inventory-sum');
+  renderInvSum.textContent = formatCurrency(calculateInventorySum());
 }
 
-function formatCurrency (amount){
-  return 'Total Inventory Items Value=$'+ amount.toFixed(2);
+function formatCurrency(amount) {
+  return 'Total Inventory Items Value=$' + amount.toFixed(2);
 
 
 }
@@ -54,8 +58,8 @@ function formatCurrency (amount){
 function calculateInventorySum() {
   let indexSum = 0;
   inventoryList.forEach(product => {
-    indexSum += product.price * product.quantity;
-    
+      indexSum += product.price * product.quantity;
+
   });
   return indexSum;
 
@@ -74,20 +78,27 @@ function getNewProductInInventory(event) {
   const productCategory = document.getElementById('productCategory').value;
 
   const newlyAddedProduct = {
-    name: productName,
-    price: parseFloat(productPrice),
-    quantity: parseInt(productQuantity),
-    vendor: productVendor,
-    category: productCategory,
+      name: productName,
+      price: parseFloat(productPrice),
+      quantity: parseInt(productQuantity),
+      vendor: productVendor,
+      category: productCategory,
 
   }
-  inventoryList.push(newlyAddedProduct);
 
+  if (editIndex !== null) {
+      inventoryList[editIndex] = newlyAddedProduct;
+      editIndex = null;
+  } else {
+      inventoryList.push(newlyAddedProduct);
+  }
+
+  // inventoryList.push(newlyAddedProduct);
+
+  renderProducts();
+  renderTotalSum();
 
   document.getElementById('productForm').reset();
-
-  renderProducts(newlyAddedProduct);
-  renderTotalSum();
 
 }
 
@@ -100,7 +111,7 @@ function amendInventoryList(index) {
   document.getElementById('productPrice').value = parseFloat(modifiedProduct.price);
   document.getElementById('productVendor').value = modifiedProduct.vendor;
   document.getElementById('productCategory').value = modifiedProduct.category;
-  document.getElementById('productId').value = index;
+  editIndex = index;
 
   // renderProducts(inventoryList);
   renderTotalSum();
@@ -108,26 +119,15 @@ function amendInventoryList(index) {
 }
 
 // store the amended value of inventory...
-function saveModifiedProduct() {
-  const index = document.getElementById('productId').value;
-  inventoryList[index].name = document.getElementById('productName').value;
-  inventoryList[index].quantity = parseInt(document.getElementById('productQuantity').value);
-  inventoryList[index].price = parseFloat(document.getElementById('productPrice').value);
-  inventoryList[index].vendor = document.getElementById('productVendor').value;
-  inventoryList[index].category = document.getElementById('productCategory').value;
 
-  renderProducts();
-  document.getElementById('productForm').reset();
-  document.getElementById('productId').value = '';
-
-}
 
 // remove product from inventory...
 
 function deleteProduct(index) {
-  // const productDelete = inventoryList[index];
-  alert('are you sure to delete?')
-  inventoryList.splice(index, 1);
+  if (confirm('Are you sure to delete?')){
+      inventoryList.splice(index, 1);
+  }
+
   renderProducts();
 
   renderTotalSum();
@@ -141,11 +141,11 @@ function renderProducts() {
   productInventoryList.innerHTML = '';
 
   inventoryList.forEach(function (products, index) {
-    const newProductInTable = document.createElement('tr');
+      const newProductInTable = document.createElement('tr');
 
-    newProductInTable.innerHTML =
+      newProductInTable.innerHTML =
 
-      `
+          `
       <td class="text-center border-2 py-4 m-4 bg-green-600">${products.name}</td>
       <td class="text-center border-2 py-4 m-4 bg-rose-700">${products.quantity}</td>
       <td class="text-center border-2 py-4 m-4 bg-cyan-500">${products.price}</td>
@@ -156,7 +156,7 @@ function renderProducts() {
       <button onclick="deleteProduct(${index})" class="bg-red-500 text-white p-1 px-3 rounded">Delete</button>
       </td>
       `;
-    productInventoryList.appendChild(newProductInTable)
+      productInventoryList.appendChild(newProductInTable)
   });
   renderTotalSum();
 
@@ -166,4 +166,23 @@ document.getElementById('productForm').addEventListener('submit', getNewProductI
 
 renderProducts();
 renderTotalSum();
+
+
+
+
+// previously coded for save edited products...
+
+// function saveModifiedProduct() {
+//     const index = document.getElementById('productId').value;
+//     inventoryList[index].name = document.getElementById('productName').value;
+//     inventoryList[index].quantity = parseInt(document.getElementById('productQuantity').value);
+//     inventoryList[index].price = parseFloat(document.getElementById('productPrice').value);
+//     inventoryList[index].vendor = document.getElementById('productVendor').value;
+//     inventoryList[index].category = document.getElementById('productCategory').value;
+
+//     renderProducts();
+//     document.getElementById('productForm').reset();
+//     document.getElementById('productId').value = '';
+
+// }
 
